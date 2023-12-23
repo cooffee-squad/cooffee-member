@@ -28,11 +28,19 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
+    //mockk
+    implementation("com.ninja-squad:springmockk:4.0.2")
+
     //postgresql
     runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("com.h2database:h2")
 
     //liquibase
     implementation("org.liquibase:liquibase-core")
+
+    //jwt
+    implementation("com.auth0:java-jwt:4.4.0")
+    implementation("com.auth0:jwks-rsa:0.22.1")
 
     //test
     testImplementation("org.springframework.boot:spring-boot-starter-test")

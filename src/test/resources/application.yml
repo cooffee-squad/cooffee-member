@@ -1,0 +1,9 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    generate-ddl: true
+    open-in-view: false
+
+  liquibase:
+    enabled: false
