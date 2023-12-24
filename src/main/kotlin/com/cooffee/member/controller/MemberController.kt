@@ -15,8 +15,8 @@ class MemberController(
 
     @PostMapping
     fun singUp() {
-        val memberName = memberService.signUp()
-        println("memberName = $memberName")
+//        val memberName = memberService.signUp()
+//        println("memberName = $memberName")
     }
 
     @GetMapping

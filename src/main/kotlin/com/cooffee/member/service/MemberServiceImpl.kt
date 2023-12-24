@@ -15,14 +15,8 @@ class MemberServiceImpl(
 ) : MemberService {
 
     @Transactional
-    override fun signUp(): String {
+    override fun signUp(member: Member): String {
         log.info("Member signUp")
-        val member = Member(
-            name = "Test",
-            email = "test@test.com",
-            password = "password",
-            phone = "010-1234-5678",
-            type = MemberType.ADMIN)
         return memberRepository.save(member).name
     }
 
