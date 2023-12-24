@@ -1,25 +1,21 @@
 package com.cooffee.member.service
 
-import com.cooffee.member.common.BaseSpringBootTest
 import com.cooffee.member.domain.Member
 import com.cooffee.member.enums.MemberType
-import org.assertj.core.api.Assertions
+import com.cooffee.member.repository.MemberRepository
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import org.assertj.core.api.Assertions.*
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
+
 import org.springframework.boot.test.context.SpringBootTest
-import org.testcontainers.containers.PostgreSQLContainer
-import org.testcontainers.junit.jupiter.Container
 
-class MemberServiceTest: BaseSpringBootTest() {
+@SpringBootTest
+class MemberServiceTest(
+    private val memberRepository: MemberRepository,
+) : BehaviorSpec({
+    val memberService: MemberService = MemberServiceImpl(memberRepository)
 
-    @Autowired
-    lateinit var memberService: MemberService
-
-    @Test
-    fun signUn() {
+    given("멤버가 가입할 때") {
         val member = Member(
             name = "test",
             email = "test@test.com",
@@ -27,7 +23,11 @@ class MemberServiceTest: BaseSpringBootTest() {
             phone = "010-1234-5678",
             type = MemberType.NORMAL,
         )
-        val memberName = memberService.signUp(member)
-        assertThat(memberName).isEqualTo("test")
+        `when`("멤버를 저장 후") {
+            val memberName = memberService.signUp(member)
+            then("저장한 멤버의 아이디를 리턴한다") {
+                memberName shouldBe "test"
+            }
+        }
     }
-}
+})

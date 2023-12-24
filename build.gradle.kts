@@ -46,6 +46,13 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.springframework.security:spring-security-test")
+
+    //kotest
+    testImplementation("com.ninja-squad:springmockk:4.0.2")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.6.2")
+    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
+
+    //testcontainer
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
 }

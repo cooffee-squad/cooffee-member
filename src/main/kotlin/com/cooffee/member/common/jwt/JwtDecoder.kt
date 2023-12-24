@@ -6,10 +6,12 @@ import com.auth0.jwt.exceptions.JWTVerificationException
 import com.auth0.jwt.interfaces.DecodedJWT
 import com.auth0.jwt.interfaces.JWTVerifier
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 
 private val log = LoggerFactory.getLogger(JwtDecoder::class.java)
 
-object JwtDecoder {
+@Component
+class JwtDecoder {
     fun verify(token: String, secret: String) : DecodedJWT {
         val algorithm = Algorithm.HMAC256(secret)
         val verifier: JWTVerifier = JWT.require(algorithm).build()
