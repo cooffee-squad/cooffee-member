@@ -13,3 +13,9 @@ spring:
 
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.sql
+
+jwt:
+  issuer: cooffee
+  subject: member
+  expiresTime: 3600
+  secret: ${JWT_SECRET}

@@ -7,3 +7,9 @@ spring:
 
   liquibase:
     enabled: false
+
+jwt:
+  issuer: cooffee
+  subject: member
+  expiresTime: 3600
+  secret: cooffee-secret

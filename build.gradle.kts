@@ -52,6 +52,8 @@ dependencies {
     testImplementation("io.kotest:kotest-runner-junit5-jvm:5.6.2")
     testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
 
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
     //testcontainer
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")

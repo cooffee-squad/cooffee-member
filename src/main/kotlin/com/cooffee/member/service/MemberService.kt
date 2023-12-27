@@ -1,8 +1,11 @@
 package com.cooffee.member.service
 
 import com.cooffee.member.domain.Member
+import com.cooffee.member.model.SignInModel
+import com.cooffee.member.model.SignUpModel
 
 interface MemberService {
-    fun signUp(member: Member) : String
-    fun findById(id: Long): Member
+    fun signUp(signUpModel: SignUpModel): Member
+    fun signIn(signInModel: SignInModel): String
+    fun findByEmail(email: String): Member
 }
