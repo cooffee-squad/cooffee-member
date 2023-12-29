@@ -16,14 +16,14 @@ class MemberController(
     private val memberService: MemberService,
 ) {
 
-    @PostMapping("signUp")
+    @PostMapping("/signUp")
     fun singUp(@RequestBody signUpModel: SignUpModel): BasicResponse<SignUpResponse> {
         log.info("Sign Up Member email : {}", signUpModel.email)
         val member = memberService.signUp(signUpModel)
         return BasicResponse.toResponse(HttpStatus.CREATED, SignUpResponse(member.email, member.name))
     }
 
-    @PostMapping("signIn")
+    @PostMapping("/signIn")
     fun signIn(@RequestBody signInModel: SignInModel): BasicResponse<SignInResponse> {
         log.info("Member {} login", signInModel.email)
         memberService.signIn(signInModel)
@@ -43,4 +43,6 @@ class MemberController(
         )
         return BasicResponse.toResponse(HttpStatus.OK, memberResponse)
     }
+
+
 }

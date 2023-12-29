@@ -1,7 +1,7 @@
 package com.cooffee.member.service
 
-import com.cooffee.member.config.JwtProperties
 import com.cooffee.member.common.jwt.JwtUtil
+import com.cooffee.member.config.JwtProperties
 import com.cooffee.member.model.SignUpModel
 import com.cooffee.member.repository.MemberRepository
 import io.kotest.assertions.throwables.shouldThrow

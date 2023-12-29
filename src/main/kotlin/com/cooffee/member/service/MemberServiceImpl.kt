@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 private val log = LogManager.getLogger()
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 class MemberServiceImpl(
     private val memberRepository: MemberRepository,
     private val jwtUtil: JwtUtil,
@@ -55,7 +55,6 @@ class MemberServiceImpl(
         }
     }
 
-    @Transactional(readOnly = true)
     override fun findByEmail(email: String): Member {
         return memberRepository.findByEmail(email) ?: throw RuntimeException("존재하지 않는 멤버입니다")
     }
