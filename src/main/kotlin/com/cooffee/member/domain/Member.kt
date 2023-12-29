@@ -2,8 +2,6 @@ package com.cooffee.member.domain
 
 import com.cooffee.member.enums.MemberType
 import jakarta.persistence.*
-import org.springframework.boot.autoconfigure.web.WebProperties.Resources.Chain.Strategy
-
 
 @Entity
 @Table(name = "member")
