@@ -1,20 +1,26 @@
 package com.cooffee.member.service
 
 import com.cooffee.member.common.jwt.JwtUtil
-import com.cooffee.member.config.JwtProperties
+import com.cooffee.member.common.jwt.JwtProperties
+import com.cooffee.member.config.ServiceTest
+import com.cooffee.member.model.SignInModel
 import com.cooffee.member.model.SignUpModel
 import com.cooffee.member.repository.MemberRepository
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import org.springframework.boot.test.context.SpringBootTest
+import io.kotest.matchers.shouldNotBe
+import org.springframework.test.context.DynamicPropertyRegistry
+import org.springframework.test.context.DynamicPropertySource
+import org.testcontainers.containers.PostgreSQLContainer
 
-@SpringBootTest
+@ServiceTest
 class MemberServiceTest(
     private val memberRepository: MemberRepository,
     private val jwtUtil: JwtUtil,
     private val jwtProperties: JwtProperties,
 ) : BehaviorSpec({
+
     val memberService: MemberService = MemberServiceImpl(memberRepository, jwtUtil, jwtProperties)
 
     given("멤버가 가입할 때") {
@@ -43,4 +49,35 @@ class MemberServiceTest(
             }
         }
     }
-})
+
+    given("가입된 멤버가") {
+        val signInModel = SignInModel(
+            email = "dummy@test.com",
+            password = "123",
+        )
+        `when`("로그인 할 때") {
+            val token = memberService.signIn(signInModel)
+            then("토큰을 반환한다") {
+                token shouldNotBe null
+            }
+        }
+    }
+
+}) {
+    companion object {
+        private val container: PostgreSQLContainer<*> = PostgreSQLContainer<Nothing>("postgres:latest").apply {
+            withDatabaseName("testdb")
+            withUsername("testuser")
+            withPassword("testpassword")
+            withInitScript("db/init.sql")
+        }.also { it.start() }
+
+        @JvmStatic
+        @DynamicPropertySource
+        fun overrideProps(registry: DynamicPropertyRegistry) {
+            registry.add("spring.datasource.url", container::getJdbcUrl)
+            registry.add("spring.datasource.username", container::getUsername)
+            registry.add("spring.datasource.password", container::getPassword)
+        }
+    }
+}

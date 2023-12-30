@@ -1,9 +1,10 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     generate-ddl: true
     open-in-view: false
+    show-sql: true
 
   liquibase:
     enabled: false
