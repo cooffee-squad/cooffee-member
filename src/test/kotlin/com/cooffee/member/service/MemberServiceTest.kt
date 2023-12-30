@@ -7,6 +7,7 @@ import com.cooffee.member.model.SignInModel
 import com.cooffee.member.model.SignUpModel
 import com.cooffee.member.repository.MemberRepository
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -63,7 +64,11 @@ class MemberServiceTest(
         }
     }
 
+    //Spec 종료 후 컨테이너를 명시적으로 중지
+    afterSpec { container.stop() }
+
 }) {
+
     companion object {
         private val container: PostgreSQLContainer<*> = PostgreSQLContainer<Nothing>("postgres:latest").apply {
             withDatabaseName("testdb")
