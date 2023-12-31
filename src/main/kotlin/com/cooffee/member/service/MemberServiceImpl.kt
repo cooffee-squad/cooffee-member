@@ -1,7 +1,7 @@
 package com.cooffee.member.service
 
 import com.cooffee.member.common.jwt.JwtClaim
-import com.cooffee.member.config.JwtProperties
+import com.cooffee.member.common.jwt.JwtProperties
 import com.cooffee.member.common.jwt.JwtUtil
 import com.cooffee.member.domain.Member
 import com.cooffee.member.enums.MemberType
@@ -46,7 +46,7 @@ class MemberServiceImpl(
             val member = memberRepository.findByEmail(email) ?: throw RuntimeException("존재하지 않는 멤버입니다")
 
             val claim = JwtClaim(
-                id = member.id!!,
+                id = member.id ?: throw RuntimeException("아이디가 없습니다"),
                 email = member.email,
                 name = member.name,
                 phone = member.phone,
@@ -57,5 +57,9 @@ class MemberServiceImpl(
 
     override fun findByEmail(email: String): Member {
         return memberRepository.findByEmail(email) ?: throw RuntimeException("존재하지 않는 멤버입니다")
+    }
+
+    override fun findAllMember(): List<Member> {
+        return memberRepository.findAll()
     }
 }

@@ -7,12 +7,15 @@ import org.springframework.stereotype.Repository
 class MemberRepositoryImpl(
     private val memberJpaRepository: MemberJpaRepository
 ) : MemberRepository {
+    override fun save(member: Member): Member {
+        return memberJpaRepository.save(member)
+    }
 
     override fun findByEmail(email: String): Member? {
         return memberJpaRepository.findByEmail(email)
     }
 
-    override fun save(member: Member): Member {
-        return memberJpaRepository.save(member)
+    override fun findAll(): List<Member> {
+        return memberJpaRepository.findAll()
     }
 }

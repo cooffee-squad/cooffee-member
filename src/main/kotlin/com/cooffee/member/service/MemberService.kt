@@ -8,4 +8,5 @@ interface MemberService {
     fun signUp(signUpModel: SignUpModel): Member
     fun signIn(signInModel: SignInModel): String
     fun findByEmail(email: String): Member
+    fun findAllMember(): List<Member>
 }

@@ -1,4 +1,4 @@
-package com.cooffee.member.config
+package com.cooffee.member.common.jwt
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 

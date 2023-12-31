@@ -1,14 +1,11 @@
 package com.cooffee.member.jwt
 
 import com.cooffee.member.common.jwt.JwtClaim
-import com.cooffee.member.config.JwtProperties
+import com.cooffee.member.common.jwt.JwtProperties
 import com.cooffee.member.common.jwt.JwtUtil
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.TestConstructor
-import org.springframework.test.context.TestPropertySource
 
 @SpringBootTest
 class JwtTest(
