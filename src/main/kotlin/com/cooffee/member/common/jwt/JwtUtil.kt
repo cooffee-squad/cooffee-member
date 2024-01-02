@@ -23,7 +23,6 @@ class JwtUtil {
             .withClaim("memberId", jwtClaim.id)
             .withClaim("email", jwtClaim.email)
             .withClaim("name", jwtClaim.name)
-            .withClaim("phone", jwtClaim.phone)
             .sign(Algorithm.HMAC256(properties.secret))
 
     fun verify(token: String, secret: String): DecodedJWT {
@@ -44,5 +43,4 @@ data class JwtClaim(
     val id: Long,
     val email: String,
     val name: String,
-    val phone: String?,
 )

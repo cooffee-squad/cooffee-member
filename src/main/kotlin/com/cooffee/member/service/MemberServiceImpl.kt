@@ -9,6 +9,7 @@ import com.cooffee.member.model.SignInModel
 import com.cooffee.member.model.SignUpModel
 import com.cooffee.member.repository.MemberRepository
 import org.apache.logging.log4j.LogManager
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -20,6 +21,7 @@ class MemberServiceImpl(
     private val memberRepository: MemberRepository,
     private val jwtUtil: JwtUtil,
     private val jwtProperties: JwtProperties,
+    private val encoder: PasswordEncoder,
 ) : MemberService {
 
     @Transactional
@@ -33,33 +35,35 @@ class MemberServiceImpl(
         val member = Member(
             name = signUpModel.name,
             email = signUpModel.email,
-            password = signUpModel.password,
+            password = encoder.encode(signUpModel.password),
             phone = signUpModel.phone,
+            mainAddress = signUpModel.mainAddress,
+            subAddress = signUpModel.subAddress,
+            zipcode = signUpModel.zipcode,
             type = MemberType.NORMAL,
         )
         return memberRepository.save(member)
     }
 
     @Transactional
-    override fun signIn(signInModel: SignInModel): String {
-        return with(signInModel) {
-            val member = memberRepository.findByEmail(email) ?: throw RuntimeException("존재하지 않는 멤버입니다")
+    override fun signIn(signInModel: SignInModel): String = with(signInModel) {
 
-            val claim = JwtClaim(
-                id = member.id ?: throw RuntimeException("아이디가 없습니다"),
-                email = member.email,
-                name = member.name,
-                phone = member.phone,
-            )
-            jwtUtil.createToken(claim, jwtProperties)
-        }
+        val member = memberRepository.findByEmail(email) ?: throw RuntimeException("존재하지 않는 멤버입니다")
+
+        encoder.matches(signInModel.password, member.password).takeIf { it }
+            ?.let {
+                val claim = JwtClaim(
+                    id = member.id ?: throw RuntimeException("아이디가 없습니다"),
+                    email = member.email,
+                    name = member.name,
+                )
+                jwtUtil.createToken(claim, jwtProperties)
+            } ?: throw RuntimeException("패스워드가 일치하지 않습니다")
     }
 
-    override fun findByEmail(email: String): Member {
-        return memberRepository.findByEmail(email) ?: throw RuntimeException("존재하지 않는 멤버입니다")
-    }
+    override fun findByEmail(email: String): Member =
+        memberRepository.findByEmail(email) ?: throw RuntimeException("존재하지 않는 멤버입니다")
 
-    override fun findAllMember(): List<Member> {
-        return memberRepository.findAll()
-    }
+
+    override fun findAllMember(): List<Member> = memberRepository.findAll()
 }
