@@ -39,7 +39,6 @@ class MemberServiceTest(
         `when`("멤버를 저장 후") {
             val member = memberService.signUp(member)
             then("저장한 멤버의 아이디를 리턴한다") {
-                println(member.password)
                 member.name shouldBe "test"
             }
         }

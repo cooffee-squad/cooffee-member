@@ -40,9 +40,7 @@ class MemberController(
             email = member.email,
             name = member.name,
             phone = member.phone,
-            mainAddress = member.mainAddress,
-            subAddress = member.subAddress,
-            zipcode = member.zipcode,
+            address = member.address
         )
         return BasicResponse.toResponse(HttpStatus.OK, memberResponse)
     }

@@ -12,12 +12,11 @@ import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 class WebConfig {
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http
+        http.csrf{ it.disable() }
             .authorizeHttpRequests { authorize ->
                 authorize.requestMatchers("/v1/member/**").permitAll()
                     .anyRequest().authenticated()

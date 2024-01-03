@@ -3,6 +3,7 @@ package com.cooffee.member.service
 import com.cooffee.member.common.jwt.JwtClaim
 import com.cooffee.member.common.jwt.JwtProperties
 import com.cooffee.member.common.jwt.JwtUtil
+import com.cooffee.member.domain.Address
 import com.cooffee.member.domain.Member
 import com.cooffee.member.enums.MemberType
 import com.cooffee.member.model.SignInModel
@@ -28,6 +29,7 @@ class MemberServiceImpl(
     override fun signUp(signUpModel: SignUpModel): Member {
         with(signUpModel) {
             memberRepository.findByEmail(email)?.let {
+                log.error("Already Existed Email : {}", email)
                 throw RuntimeException("이미 존재하는 멤버입니다")
             }
         }
@@ -37,9 +39,7 @@ class MemberServiceImpl(
             email = signUpModel.email,
             password = encoder.encode(signUpModel.password),
             phone = signUpModel.phone,
-            mainAddress = signUpModel.mainAddress,
-            subAddress = signUpModel.subAddress,
-            zipcode = signUpModel.zipcode,
+            address = Address(signUpModel.mainAddress, signUpModel.subAddress, signUpModel.zipcode),
             type = MemberType.NORMAL,
         )
         return memberRepository.save(member)

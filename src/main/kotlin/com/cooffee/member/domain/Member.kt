@@ -15,11 +15,8 @@ class Member (
 
     var phone: String,
 
-    var mainAddress: String,
-
-    var subAddress: String?,
-
-    var zipcode: Int,
+    @Embedded
+    var address: Address,
 
     @Enumerated(EnumType.STRING)
     var type: MemberType,
