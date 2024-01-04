@@ -13,7 +13,10 @@ class Member (
 
     var password: String,
 
-    var phone: String? = null,
+    var phone: String,
+
+    @Embedded
+    var address: Address,
 
     @Enumerated(EnumType.STRING)
     var type: MemberType,

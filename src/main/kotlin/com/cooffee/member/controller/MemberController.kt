@@ -40,6 +40,7 @@ class MemberController(
             email = member.email,
             name = member.name,
             phone = member.phone,
+            address = member.address
         )
         return BasicResponse.toResponse(HttpStatus.OK, memberResponse)
     }

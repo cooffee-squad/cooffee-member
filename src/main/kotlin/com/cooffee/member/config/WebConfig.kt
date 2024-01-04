@@ -6,17 +6,17 @@ import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
-
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 class WebConfig {
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http
+        http.csrf{ it.disable() }
             .authorizeHttpRequests { authorize ->
                 authorize.requestMatchers("/v1/member/**").permitAll()
                     .anyRequest().authenticated()
@@ -28,6 +28,9 @@ class WebConfig {
 
         return http.build()
     }
+
+    @Bean
+    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
 }
 
