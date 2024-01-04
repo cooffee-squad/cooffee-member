@@ -3,6 +3,7 @@ package com.cooffee.member.service
 import com.cooffee.member.common.jwt.JwtUtil
 import com.cooffee.member.common.jwt.JwtProperties
 import com.cooffee.member.config.ServiceTest
+import com.cooffee.member.exception.CustomException
 import com.cooffee.member.model.SignInModel
 import com.cooffee.member.model.SignUpModel
 import com.cooffee.member.repository.MemberRepository
@@ -47,11 +48,11 @@ class MemberServiceTest(
     given("멤버를 조회할 때") {
         val email: String = "no@test.com"
         `when`("일치하는 이메일이 없으면") {
-            val exception = shouldThrow<RuntimeException> {
+            val exception = shouldThrow<CustomException> {
                 memberService.findByEmail(email)
             }
             then("예외를 반환한다") {
-                exception.message shouldBe "존재하지 않는 멤버입니다"
+                exception.exceptionType.errorCode shouldBe "M1000"
             }
         }
     }
@@ -72,11 +73,11 @@ class MemberServiceTest(
             }
         }
         `when`("패스워드가 틀리면") {
-            val exception = shouldThrow<RuntimeException> {
+            val exception = shouldThrow<CustomException> {
                 memberService.signIn(abnormalSignInModel)
             }
             then("예외를 반환한다") {
-                exception.message shouldBe "패스워드가 일치하지 않습니다"
+                exception.exceptionType.errorCode shouldBe "M1003"
             }
         }
     }

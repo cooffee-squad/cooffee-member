@@ -6,6 +6,8 @@ import com.cooffee.member.common.jwt.JwtUtil
 import com.cooffee.member.domain.Address
 import com.cooffee.member.domain.Member
 import com.cooffee.member.enums.MemberType
+import com.cooffee.member.exception.CustomException
+import com.cooffee.member.exception.ExceptionType
 import com.cooffee.member.model.SignInModel
 import com.cooffee.member.model.SignUpModel
 import com.cooffee.member.repository.MemberRepository
@@ -30,7 +32,7 @@ class MemberServiceImpl(
         with(signUpModel) {
             memberRepository.findByEmail(email)?.let {
                 log.error("Already Existed Email : {}", email)
-                throw RuntimeException("이미 존재하는 멤버입니다")
+                throw CustomException(ExceptionType.ALREADY_EXISTED_MEMBER)
             }
         }
 
@@ -48,21 +50,21 @@ class MemberServiceImpl(
     @Transactional
     override fun signIn(signInModel: SignInModel): String = with(signInModel) {
 
-        val member = memberRepository.findByEmail(email) ?: throw RuntimeException("존재하지 않는 멤버입니다")
+        val member = memberRepository.findByEmail(email) ?: throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
 
         encoder.matches(signInModel.password, member.password).takeIf { it }
             ?.let {
                 val claim = JwtClaim(
-                    id = member.id ?: throw RuntimeException("아이디가 없습니다"),
+                    id = member.id ?: throw CustomException(ExceptionType.MEMBER_ID_NOT_FOUND),
                     email = member.email,
                     name = member.name,
                 )
                 jwtUtil.createToken(claim, jwtProperties)
-            } ?: throw RuntimeException("패스워드가 일치하지 않습니다")
+            } ?: throw CustomException(ExceptionType.INCORRECT_PASSWORD)
     }
 
     override fun findByEmail(email: String): Member =
-        memberRepository.findByEmail(email) ?: throw RuntimeException("존재하지 않는 멤버입니다")
+        memberRepository.findByEmail(email) ?: throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
 
 
     override fun findAllMember(): List<Member> = memberRepository.findAll()
