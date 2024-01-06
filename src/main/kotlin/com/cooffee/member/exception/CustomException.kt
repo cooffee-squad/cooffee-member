@@ -1,3 +1,8 @@
 package com.cooffee.member.exception
 
-class CustomException(val exceptionType: ExceptionType) : RuntimeException()
+
+import org.springframework.web.server.ResponseStatusException
+
+class CustomException(exceptionType: ExceptionType) : ResponseStatusException(exceptionType.status, exceptionType.message) {
+
+}

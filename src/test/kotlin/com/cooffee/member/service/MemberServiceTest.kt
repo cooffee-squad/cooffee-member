@@ -12,6 +12,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldContain
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
@@ -52,7 +53,7 @@ class MemberServiceTest(
                 memberService.findByEmail(email)
             }
             then("예외를 반환한다") {
-                exception.exceptionType.errorCode shouldBe "M1000"
+                exception.message shouldContain  "회원을 찾을 수 없습니다."
             }
         }
     }
@@ -77,7 +78,7 @@ class MemberServiceTest(
                 memberService.signIn(abnormalSignInModel)
             }
             then("예외를 반환한다") {
-                exception.exceptionType.errorCode shouldBe "M1003"
+                exception.message shouldContain "패스워드가 일치하지 않습니다."
             }
         }
     }
