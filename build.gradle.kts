@@ -1,12 +1,16 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.google.protobuf.gradle.*
 
 plugins {
     id("org.springframework.boot") version "3.2.0"
     id("io.spring.dependency-management") version "1.1.4"
+    id("com.google.protobuf") version "0.9.4"
     kotlin("jvm") version "1.9.20"
     kotlin("plugin.spring") version "1.9.20"
     kotlin("plugin.jpa") version "1.9.20"
 }
+
+apply(plugin = "com.google.protobuf")
 
 group = "com.cooffee"
 version = "0.0.1-SNAPSHOT"
@@ -17,6 +21,18 @@ java {
 
 repositories {
     mavenCentral()
+}
+
+val grpcVersion = "1.59.1"
+val protobufVersion = "3.25.1"
+val protocVersion = protobufVersion
+
+sourceSets {
+    main {
+        java {
+            srcDir("src/main/generatedProto")
+        }
+    }
 }
 
 dependencies {
@@ -42,6 +58,10 @@ dependencies {
     implementation("com.auth0:java-jwt:4.4.0")
     implementation("com.auth0:jwks-rsa:0.22.1")
 
+    //gRPC
+    implementation("io.grpc:grpc-protobuf:${grpcVersion}")
+    implementation("io.grpc:grpc-stub:${grpcVersion}")
+
     //test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
@@ -59,13 +79,35 @@ dependencies {
     testImplementation("org.testcontainers:postgresql")
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs += "-Xjsr305=strict"
-        jvmTarget = "17"
+protobuf {
+    protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
+    plugins {
+        id("grpc") {
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+        }
     }
-}
 
-tasks.withType<Test> {
-    useJUnitPlatform()
+    generateProtoTasks {
+        ofSourceSet("main").forEach { task ->
+            task.builtins {
+                all().forEach {
+                    it.plugins {
+                        id("grpc")
+                    }
+                }
+            }
+        }
+        setGeneratedFilesBaseDir("$projectDir/src/generatedProto")
+    }
+
+    tasks.withType<KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs += "-Xjsr305=strict"
+            jvmTarget = "17"
+        }
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
 }
