@@ -11,7 +11,9 @@ import com.cooffee.member.exception.ExceptionType
 import com.cooffee.member.model.SignInModel
 import com.cooffee.member.model.SignUpModel
 import com.cooffee.member.repository.MemberRepository
+import com.cooffee.member.util.MailUtil
 import org.apache.logging.log4j.LogManager
+import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -22,6 +24,7 @@ private val log = LogManager.getLogger()
 @Transactional(readOnly = true)
 class MemberServiceImpl(
     private val memberRepository: MemberRepository,
+    private val mailUtil: MailUtil,
     private val jwtUtil: JwtUtil,
     private val jwtProperties: JwtProperties,
     private val encoder: PasswordEncoder,
@@ -44,6 +47,10 @@ class MemberServiceImpl(
             address = Address(signUpModel.mainAddress, signUpModel.subAddress, signUpModel.zipcode),
             type = MemberType.NORMAL,
         )
+
+        val result = mailUtil.sendMail(signUpModel.email)
+        println("result = ${result}")
+
         return memberRepository.save(member)
     }
 

@@ -9,6 +9,19 @@ spring:
   liquibase:
     enabled: false
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: test@cooffee.com
+    password: cooffee-secret
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
+
 jwt:
   issuer: cooffee
   subject: member

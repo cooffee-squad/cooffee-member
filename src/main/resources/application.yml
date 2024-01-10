@@ -10,12 +10,28 @@ spring:
       ddl-auto: validate
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
 
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.sql
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USER}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
 jwt:
   issuer: cooffee
   subject: member
   expiresTime: 3600
   secret: ${JWT_SECRET}
+
+server:
+  port: ${SERVER_PORT}
