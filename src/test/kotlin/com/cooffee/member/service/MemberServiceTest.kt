@@ -14,8 +14,9 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
+import io.mockk.Runs
 import io.mockk.every
-import io.mockk.mockkStatic
+import io.mockk.just
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
@@ -33,7 +34,7 @@ class MemberServiceTest(
     val memberService: MemberService = MemberServiceImpl(memberRepository, mailUtil, jwtUtil, jwtProperties, passwordEncoder)
 
     given("멤버가 가입할 때") {
-        every { mailUtil.sendMail(any()) } returns 1
+        every { mailUtil.sendMail(any()) } just Runs
         val member = SignUpModel(
             name = "test",
             email = "test@test.com",

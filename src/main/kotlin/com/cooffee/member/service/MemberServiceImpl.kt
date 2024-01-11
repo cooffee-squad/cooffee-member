@@ -12,8 +12,10 @@ import com.cooffee.member.model.SignInModel
 import com.cooffee.member.model.SignUpModel
 import com.cooffee.member.repository.MemberRepository
 import com.cooffee.member.util.MailUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.apache.logging.log4j.LogManager
-import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -48,8 +50,9 @@ class MemberServiceImpl(
             type = MemberType.NORMAL,
         )
 
-        val result = mailUtil.sendMail(signUpModel.email)
-        println("result = ${result}")
+        CoroutineScope(Dispatchers.IO).launch {
+            mailUtil.sendMail(signUpModel.email)
+        }
 
         return memberRepository.save(member)
     }

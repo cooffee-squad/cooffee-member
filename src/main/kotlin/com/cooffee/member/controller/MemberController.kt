@@ -44,6 +44,4 @@ class MemberController(
         )
         return BasicResponse.toResponse(HttpStatus.OK, memberResponse)
     }
-
-
 }

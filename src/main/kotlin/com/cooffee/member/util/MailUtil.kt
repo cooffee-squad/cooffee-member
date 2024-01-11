@@ -4,11 +4,13 @@ import com.cooffee.member.exception.CustomException
 import com.cooffee.member.exception.ExceptionType
 import jakarta.mail.MessagingException
 import jakarta.mail.internet.MimeMessage
+import org.apache.logging.log4j.LogManager
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Component
 import kotlin.random.Random
 
 const val senderMail = "kadunsj@gmail.com"
+private val log = LogManager.getLogger()
 
 @Component
 class MailUtil(
@@ -17,11 +19,11 @@ class MailUtil(
 
     private var number: Int = 0
 
-    fun sendMail(email: String): Int {
+    fun sendMail(email: String) {
         val message: MimeMessage = createMail(email)
         mailSender.send(message)
 
-        return number
+        log.info("Cooffee signup mail number : {}", number)
     }
 
     fun createMail(email: String): MimeMessage {

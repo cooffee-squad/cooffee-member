@@ -65,6 +65,9 @@ dependencies {
 
     implementation("javax.annotation:javax.annotation-api:1.3.2")
 
+    //coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+
     //test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
