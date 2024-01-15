@@ -44,4 +44,9 @@ class MemberController(
         )
         return BasicResponse.toResponse(HttpStatus.OK, memberResponse)
     }
+
+    @GetMapping("/confirm-mail")
+    fun confirmMail(email: String, token: String) {
+        log.info("hello user")
+    }
 }

@@ -12,3 +12,12 @@ CREATE TABLE member
     created_at      TIMESTAMP,
     updated_at      TIMESTAMP
 );
+
+CREATE TABLE member_confirm
+(
+    id              BIGSERIAL PRIMARY KEY,
+    email           TEXT,
+    token           TEXT,
+    expired_at      TIMESTAMP,
+    member_id       BIGINT
+);

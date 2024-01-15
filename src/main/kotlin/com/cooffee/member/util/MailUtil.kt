@@ -5,6 +5,7 @@ import com.cooffee.member.exception.ExceptionType
 import jakarta.mail.MessagingException
 import jakarta.mail.internet.MimeMessage
 import org.apache.logging.log4j.LogManager
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Component
 import kotlin.random.Random
@@ -14,6 +15,7 @@ private val log = LogManager.getLogger()
 
 @Component
 class MailUtil(
+    @Value("\${server.port}") val port: Int,
     private val mailSender: JavaMailSender,
 ) {
 
@@ -33,13 +35,15 @@ class MailUtil(
         try {
             message.setFrom(senderMail)
             message.setRecipients(MimeMessage.RecipientType.TO, email)
-            message.subject = "이메일 인증"
+            message.subject = "Cooffee 회원가입 인증"
             val body: String = """
-            <h3>요청하신 인증 번호입니다.</h3>
-            <h1>$number</h1>
+            <h3>아래 링크를 통해 가입을 완료하세요</h3>
+            <h2><a href='http://localhost:$port/v1/member/hello' target='_blenk'>이메일 인증 확인</a></h2>
+            <br/>
             <h3>감사합니다.</h3>
         """.trimIndent()
             message.setText(body, "UTF-8", "html")
+            // TODO 일단 localhost로 보내도록 테스트 환경을 구성
         } catch (e: MessagingException) {
             e.printStackTrace()
             throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
