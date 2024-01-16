@@ -10,14 +10,6 @@ CREATE TABLE member
     zipcode         INTEGER,
     type            TEXT,
     created_at      TIMESTAMP,
-    updated_at      TIMESTAMP
-);
-
-CREATE TABLE member_confirm
-(
-    id              BIGSERIAL PRIMARY KEY,
-    email           TEXT,
-    token           TEXT,
-    expired_at      TIMESTAMP,
-    member_id       BIGINT
+    updated_at      TIMESTAMP,
+    confirm_flag    BOOLEAN
 );

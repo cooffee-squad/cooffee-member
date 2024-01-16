@@ -13,17 +13,5 @@ CREATE TABLE member
     updated_at      TIMESTAMP
 );
 
-CREATE TABLE member_confirm
-(
-    id              BIGSERIAL PRIMARY KEY,
-    email           TEXT,
-    token           TEXT,
-    expired_at      TIMESTAMP,
-    member_id       TEXT
-);
-
 insert into member (name, email, password, phone, main_address, sub_address, zipcode, type, created_at, updated_at)
 values ('dummy', 'dummy@test.com', '$2a$10$MoAYX5AHJhPMWz2ki5/OC.iYMJ1uoT26/vd58WrcWbfRDB19gxqRK', '010-1111-2222', '서울특별시 강남구', '논현동 어딘가', 12345,'NORMAL', CURRENT_DATE, CURRENT_DATE);
-
-insert into member_confirm(email, token, expired_at, member_id)
-values ('dummy@test.com', 'tmp_token', CURRENT_DATE, 1);

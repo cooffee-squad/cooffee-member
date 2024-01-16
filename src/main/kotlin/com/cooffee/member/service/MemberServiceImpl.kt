@@ -48,6 +48,7 @@ class MemberServiceImpl(
             phone = signUpModel.phone,
             address = Address(signUpModel.mainAddress, signUpModel.subAddress, signUpModel.zipcode),
             type = MemberType.NORMAL,
+            confirm = false
         )
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -73,9 +74,19 @@ class MemberServiceImpl(
             } ?: throw CustomException(ExceptionType.INCORRECT_PASSWORD)
     }
 
-    override fun findByEmail(email: String): Member =
+    override fun getMemberByEmail(email: String): Member =
         memberRepository.findByEmail(email) ?: throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
 
 
     override fun findAllMember(): List<Member> = memberRepository.findAll()
+
+    override fun confirmMember(email: String, token: String) {
+        val findByEmail: Member = getMemberByEmail(email)
+        val redisTokenMatch = true //TODO Redis에서 토큰을 찾아보자
+        if (redisTokenMatch) {
+            findByEmail.activateMember()
+            log.info("token match email : $email")
+        }
+
+    }
 }

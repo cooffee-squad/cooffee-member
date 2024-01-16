@@ -56,7 +56,7 @@ class MemberServiceTest(
         val email: String = "no@test.com"
         `when`("일치하는 이메일이 없으면") {
             val exception = shouldThrow<CustomException> {
-                memberService.findByEmail(email)
+                memberService.getMemberByEmail(email)
             }
             then("예외를 반환한다") {
                 exception.message shouldContain  "회원을 찾을 수 없습니다."
