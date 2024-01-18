@@ -23,8 +23,8 @@ repositories {
     mavenCentral()
 }
 
-val grpcVersion = "1.59.1"
-val protobufVersion = "3.25.1"
+val grpcVersion = "1.59.0"
+val protobufVersion = "3.21.7"
 val protocVersion = protobufVersion
 
 sourceSets {
@@ -39,6 +39,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
 
     //kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -61,6 +62,11 @@ dependencies {
     //gRPC
     implementation("io.grpc:grpc-protobuf:${grpcVersion}")
     implementation("io.grpc:grpc-stub:${grpcVersion}")
+
+    implementation("javax.annotation:javax.annotation-api:1.3.2")
+
+    //coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
     //test
     testImplementation("org.springframework.boot:spring-boot-starter-test")

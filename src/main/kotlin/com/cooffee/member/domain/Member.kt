@@ -21,8 +21,15 @@ class Member (
     @Enumerated(EnumType.STRING)
     var type: MemberType,
 
+    @Column(name = "confirm_flag")
+    var confirm: Boolean,
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    ) : BaseEntity()
+    ) : BaseEntity() {
+    fun activateMember() {
+        this.confirm = true
+    }
+}

@@ -1,18 +1,22 @@
 package com.cooffee.member.service
 
-import com.cooffee.member.common.jwt.JwtUtil
 import com.cooffee.member.common.jwt.JwtProperties
+import com.cooffee.member.common.jwt.JwtUtil
 import com.cooffee.member.config.ServiceTest
 import com.cooffee.member.exception.CustomException
 import com.cooffee.member.model.SignInModel
 import com.cooffee.member.model.SignUpModel
 import com.cooffee.member.repository.MemberRepository
+import com.cooffee.member.util.MailUtil
+import com.ninjasquad.springmockk.MockkBean
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
@@ -20,15 +24,17 @@ import org.testcontainers.containers.PostgreSQLContainer
 
 @ServiceTest
 class MemberServiceTest(
+    @MockkBean private val mailUtil: MailUtil,
     private val memberRepository: MemberRepository,
     private val jwtUtil: JwtUtil,
     private val jwtProperties: JwtProperties,
     private val passwordEncoder: PasswordEncoder,
 ) : BehaviorSpec({
 
-    val memberService: MemberService = MemberServiceImpl(memberRepository, jwtUtil, jwtProperties, passwordEncoder)
+    val memberService: MemberService = MemberServiceImpl(memberRepository, mailUtil, jwtUtil, jwtProperties, passwordEncoder)
 
     given("멤버가 가입할 때") {
+        every { mailUtil.sendMail(any()) } just Runs
         val member = SignUpModel(
             name = "test",
             email = "test@test.com",
@@ -50,7 +56,7 @@ class MemberServiceTest(
         val email: String = "no@test.com"
         `when`("일치하는 이메일이 없으면") {
             val exception = shouldThrow<CustomException> {
-                memberService.findByEmail(email)
+                memberService.getMemberByEmail(email)
             }
             then("예외를 반환한다") {
                 exception.message shouldContain  "회원을 찾을 수 없습니다."

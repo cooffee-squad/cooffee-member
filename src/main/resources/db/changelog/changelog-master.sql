@@ -10,5 +10,6 @@ CREATE TABLE member
     zipcode         INTEGER,
     type            TEXT,
     created_at      TIMESTAMP,
-    updated_at      TIMESTAMP
+    updated_at      TIMESTAMP,
+    confirm_flag    BOOLEAN
 );

@@ -11,6 +11,10 @@ import com.cooffee.member.exception.ExceptionType
 import com.cooffee.member.model.SignInModel
 import com.cooffee.member.model.SignUpModel
 import com.cooffee.member.repository.MemberRepository
+import com.cooffee.member.util.MailUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.apache.logging.log4j.LogManager
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -22,6 +26,7 @@ private val log = LogManager.getLogger()
 @Transactional(readOnly = true)
 class MemberServiceImpl(
     private val memberRepository: MemberRepository,
+    private val mailUtil: MailUtil,
     private val jwtUtil: JwtUtil,
     private val jwtProperties: JwtProperties,
     private val encoder: PasswordEncoder,
@@ -43,7 +48,13 @@ class MemberServiceImpl(
             phone = signUpModel.phone,
             address = Address(signUpModel.mainAddress, signUpModel.subAddress, signUpModel.zipcode),
             type = MemberType.NORMAL,
+            confirm = false
         )
+
+        CoroutineScope(Dispatchers.IO).launch {
+            mailUtil.sendMail(signUpModel.email)
+        }
+
         return memberRepository.save(member)
     }
 
@@ -63,9 +74,19 @@ class MemberServiceImpl(
             } ?: throw CustomException(ExceptionType.INCORRECT_PASSWORD)
     }
 
-    override fun findByEmail(email: String): Member =
+    override fun getMemberByEmail(email: String): Member =
         memberRepository.findByEmail(email) ?: throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
 
 
     override fun findAllMember(): List<Member> = memberRepository.findAll()
+
+    override fun confirmMember(email: String, token: String) {
+        val findByEmail: Member = getMemberByEmail(email)
+        val redisTokenMatch = true //TODO Redis에서 토큰을 찾아보자
+        if (redisTokenMatch) {
+            findByEmail.activateMember()
+            log.info("token match email : $email")
+        }
+
+    }
 }

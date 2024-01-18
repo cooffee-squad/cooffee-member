@@ -7,6 +7,7 @@ import com.cooffee.member.model.SignUpModel
 interface MemberService {
     fun signUp(signUpModel: SignUpModel): Member
     fun signIn(signInModel: SignInModel): String
-    fun findByEmail(email: String): Member
+    fun getMemberByEmail(email: String): Member
     fun findAllMember(): List<Member>
+    fun confirmMember(email: String, token: String)
 }
