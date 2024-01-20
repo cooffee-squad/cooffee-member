@@ -5,12 +5,15 @@ import com.cooffee.member.common.jwt.JwtProperties
 import com.cooffee.member.common.jwt.JwtUtil
 import com.cooffee.member.domain.Address
 import com.cooffee.member.domain.Member
+import com.cooffee.member.domain.RefreshToken
 import com.cooffee.member.enums.MemberType
 import com.cooffee.member.exception.CustomException
 import com.cooffee.member.exception.ExceptionType
 import com.cooffee.member.model.SignInModel
+import com.cooffee.member.model.SignInResponse
 import com.cooffee.member.model.SignUpModel
 import com.cooffee.member.repository.MemberRepository
+import com.cooffee.member.repository.redis.RefreshTokenRepository
 import com.cooffee.member.util.MailUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +29,7 @@ private val log = LogManager.getLogger()
 @Transactional(readOnly = true)
 class MemberServiceImpl(
     private val memberRepository: MemberRepository,
+    private val refreshTokenRepository: RefreshTokenRepository,
     private val mailUtil: MailUtil,
     private val jwtUtil: JwtUtil,
     private val jwtProperties: JwtProperties,
@@ -59,7 +63,7 @@ class MemberServiceImpl(
     }
 
     @Transactional
-    override fun signIn(signInModel: SignInModel): String = with(signInModel) {
+    override fun signIn(signInModel: SignInModel): SignInResponse = with(signInModel) {
 
         val member = memberRepository.findByEmail(email) ?: throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
 
@@ -70,7 +74,16 @@ class MemberServiceImpl(
                     email = member.email,
                     name = member.name,
                 )
-                jwtUtil.createToken(claim, jwtProperties)
+                val accessToken = jwtUtil.createAccessToken(claim, jwtProperties)
+                val refreshToken = jwtUtil.createRefreshToken(claim, jwtProperties)
+
+                // Redis 에 토큰 저장
+                val saveRefreshToken = refreshTokenRepository.save(RefreshToken(member.id.toString(), refreshToken, accessToken))
+
+                println("saveRefreshToken = $saveRefreshToken")
+
+                SignInResponse(accessToken = accessToken, refreshToken = refreshToken)
+
             } ?: throw CustomException(ExceptionType.INCORRECT_PASSWORD)
     }
 

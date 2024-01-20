@@ -7,31 +7,38 @@ import com.cooffee.member.exception.CustomException
 import com.cooffee.member.model.SignInModel
 import com.cooffee.member.model.SignUpModel
 import com.cooffee.member.repository.MemberRepository
+import com.cooffee.member.repository.redis.RefreshTokenRepository
 import com.cooffee.member.util.MailUtil
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.extensions.Extension
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
+import org.springframework.boot.SpringApplicationRunListener
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
+import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.PostgreSQLContainer
 
 @ServiceTest
 class MemberServiceTest(
     @MockkBean private val mailUtil: MailUtil,
     private val memberRepository: MemberRepository,
+    private val refreshTokenRepository: RefreshTokenRepository,
     private val jwtUtil: JwtUtil,
     private val jwtProperties: JwtProperties,
     private val passwordEncoder: PasswordEncoder,
 ) : BehaviorSpec({
 
-    val memberService: MemberService = MemberServiceImpl(memberRepository, mailUtil, jwtUtil, jwtProperties, passwordEncoder)
+    val memberService: MemberService = MemberServiceImpl(memberRepository, refreshTokenRepository, mailUtil, jwtUtil, jwtProperties, passwordEncoder)
 
     given("멤버가 가입할 때") {
         every { mailUtil.sendMail(any()) } just Runs
@@ -90,9 +97,14 @@ class MemberServiceTest(
     }
 
     //Spec 종료 후 컨테이너를 명시적으로 중지
-    afterSpec { container.stop() }
+    afterSpec {
+        container.stop()
+        redisContainer.stop()
+    }
 
 }) {
+
+    override fun extensions(): List<Extension> = listOf(SpringExtension)
 
     companion object {
         private val container: PostgreSQLContainer<*> = PostgreSQLContainer<Nothing>("postgres:latest").apply {
@@ -102,12 +114,18 @@ class MemberServiceTest(
             withInitScript("db/init.sql")
         }.also { it.start() }
 
+        private val redisContainer: GenericContainer<*> = GenericContainer<Nothing>("redis:latest").apply {
+            withExposedPorts(6379)
+        }.also { it.start() }
+
         @JvmStatic
         @DynamicPropertySource
         fun overrideProps(registry: DynamicPropertyRegistry) {
             registry.add("spring.datasource.url", container::getJdbcUrl)
             registry.add("spring.datasource.username", container::getUsername)
             registry.add("spring.datasource.password", container::getPassword)
+            registry.add("spring.data.redis.host", redisContainer::getContainerIpAddress)
+            registry.add("spring.data.redis.port", redisContainer::getFirstMappedPort)
         }
     }
 }

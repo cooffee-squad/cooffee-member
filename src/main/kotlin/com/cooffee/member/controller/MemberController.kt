@@ -26,9 +26,8 @@ class MemberController(
     @PostMapping("/signIn")
     fun signIn(@RequestBody signInModel: SignInModel): BasicResponse<SignInResponse> {
         log.info("Member {} login", signInModel.email)
-        memberService.signIn(signInModel)
-
-        return BasicResponse.toResponse(HttpStatus.OK, SignInResponse("token"))
+        val signInResponse = memberService.signIn(signInModel)
+        return BasicResponse.toResponse(HttpStatus.OK, signInResponse)
     }
 
     @GetMapping("/details")
