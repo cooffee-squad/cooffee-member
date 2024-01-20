@@ -80,7 +80,7 @@ class MemberServiceImpl(
                 // Redis 에 토큰 저장
                 val saveRefreshToken = refreshTokenRepository.save(RefreshToken(member.id.toString(), refreshToken, accessToken))
 
-                println("saveRefreshToken = $saveRefreshToken")
+                log.info("Member {} save refresh token : {}", saveRefreshToken)
 
                 SignInResponse(accessToken = accessToken, refreshToken = refreshToken)
 
