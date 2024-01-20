@@ -16,7 +16,7 @@ private val log = LogManager.getLogger()
 @Component
 class JwtUtil {
 
-    fun createToken(jwtClaim: JwtClaim, properties: JwtProperties): String =
+    fun createAccessToken(jwtClaim: JwtClaim, properties: JwtProperties): String =
         JWT.create()
             .withIssuer(properties.issuer)
             .withSubject(properties.subject)
@@ -25,6 +25,14 @@ class JwtUtil {
             .withClaim("memberId", jwtClaim.id)
             .withClaim("email", jwtClaim.email)
             .withClaim("name", jwtClaim.name)
+            .sign(Algorithm.HMAC256(properties.secret))
+
+    fun createRefreshToken(jwtClaim: JwtClaim, properties: JwtProperties): String =
+        JWT.create()
+            .withIssuer(properties.issuer)
+            .withSubject(properties.subject)
+            .withIssuedAt(Date())
+            .withExpiresAt(Date(Date().time + properties.expiresTime * 1000))
             .sign(Algorithm.HMAC256(properties.secret))
 
     fun verify(token: String, secret: String): DecodedJWT {

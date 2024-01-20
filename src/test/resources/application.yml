@@ -27,3 +27,6 @@ jwt:
   subject: member
   expiresTime: 3600
   secret: cooffee-secret
+
+server:
+  port: 28081

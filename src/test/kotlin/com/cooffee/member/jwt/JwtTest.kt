@@ -15,7 +15,7 @@ class JwtTest(
 
     given("토큰이 주어졌을 때") {
         val claim = JwtClaim(1L, "test@test.com", "테스트")
-        val token = jwtUtil.createToken(claim, jwtProperties)
+        val token = jwtUtil.createAccessToken(claim, jwtProperties)
 
         `when`("토큰을 검증한 후") {
             val decode = jwtUtil.verify(token, jwtProperties.secret)
