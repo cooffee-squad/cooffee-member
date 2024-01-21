@@ -21,5 +21,4 @@ enum class ExceptionType(val status: HttpStatus, val errorCode: String, val mess
             return ExceptionType.values().firstOrNull { it.errorCode == errorCode } ?: ERROR_CODE_NOT_FOUND
         }
     }
-
 }
