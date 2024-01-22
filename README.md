@@ -19,10 +19,12 @@
 - **ORM** : JPA
 
 ## ⚙️ 기술 스택
-- **Server** : AWS EC2
+- **Server** : Personal Server(from Rester)
 - **DataBase** : PostgreSQL
 - **WS/WAS** : Nginx, Tomcat
-- **Collaboration Tool** : Slack, Google Meet
+- **Security** : JWT, Spring Security, Redis(Refresh Token)
+- **Collaboration Tool** : Slack, Git, Google Meet
+- **Infra** : Docker, Kubernetes
 
 ## 📝 프로젝트 아키텍쳐
 
