@@ -66,6 +66,9 @@ class MemberServiceImpl(
     override fun signIn(signInModel: SignInModel): SignInResponse = with(signInModel) {
 
         val member = memberRepository.findByEmail(email) ?: throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
+        if (member.confirm.not()) {
+            throw CustomException(ExceptionType.MEMBER_NOT_CONFIRM)
+        }
 
         encoder.matches(signInModel.password, member.password).takeIf { it }
             ?.let {
@@ -93,11 +96,12 @@ class MemberServiceImpl(
 
     override fun findAllMember(): List<Member> = memberRepository.findAll()
 
+    @Transactional
     override fun confirmMember(email: String, token: String) {
-        val findByEmail: Member = getMemberByEmail(email)
-        val redisTokenMatch = true //TODO Redis에서 토큰을 찾아보자
+        val member: Member = getMemberByEmail(email)
+        val redisTokenMatch = true
         if (redisTokenMatch) {
-            findByEmail.activateMember()
+            member.activateMember()
             log.info("token match email : $email")
         }
 

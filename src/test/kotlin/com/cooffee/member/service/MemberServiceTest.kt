@@ -73,12 +73,16 @@ class MemberServiceTest(
 
     given("가입된 멤버가") {
         val normalSignInModel = SignInModel(
-            email = "dummy@test.com",
+            email = "dummy1@test.com",
             password = "123",
         )
         val abnormalSignInModel = SignInModel(
-            email = "dummy@test.com",
+            email = "dummy1@test.com",
             password = "1234",
+        )
+        val unConfirmSignInModel = SignInModel(
+            email = "dummy2@test.com",
+            password = "123",
         )
         `when`("로그인 할 때") {
             val token = memberService.signIn(normalSignInModel)
@@ -92,6 +96,14 @@ class MemberServiceTest(
             }
             then("예외를 반환한다") {
                 exception.message shouldContain "패스워드가 일치하지 않습니다."
+            }
+        }
+        `when`("이메일 인증이 되지 않으면") {
+            val exception = shouldThrow<CustomException> {
+                memberService.signIn(unConfirmSignInModel)
+            }
+            then("예외를 반환한다") {
+                exception.message shouldContain "이메일 인증이 되지 않은 회원입니다."
             }
         }
     }

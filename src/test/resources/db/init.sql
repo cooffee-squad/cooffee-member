@@ -15,4 +15,6 @@ CREATE TABLE member
 );
 
 insert into member (name, email, password, phone, main_address, sub_address, zipcode, type, confirm_flag, created_at, updated_at)
-values ('dummy', 'dummy@test.com', '$2a$10$MoAYX5AHJhPMWz2ki5/OC.iYMJ1uoT26/vd58WrcWbfRDB19gxqRK', '010-1111-2222', '서울특별시 강남구', '논현동 어딘가', 12345,'NORMAL', true, CURRENT_DATE, CURRENT_DATE);
+values ('dummy1', 'dummy1@test.com', '$2a$10$MoAYX5AHJhPMWz2ki5/OC.iYMJ1uoT26/vd58WrcWbfRDB19gxqRK', '010-1111-2222', '서울특별시 강남구', '논현동 어딘가', 12345,'NORMAL', true, CURRENT_DATE, CURRENT_DATE);
+insert into member (name, email, password, phone, main_address, sub_address, zipcode, type, confirm_flag, created_at, updated_at)
+values ('dummy2', 'dummy2@test.com', '$2a$10$MoAYX5AHJhPMWz2ki5/OC.iYMJ1uoT26/vd58WrcWbfRDB19gxqRK', '010-2222-3333', '경기도 성남시', '분당구 어딘가', 12345,'NORMAL', false, CURRENT_DATE, CURRENT_DATE);
