@@ -15,7 +15,9 @@ enum class ExceptionType(val status: HttpStatus, val errorCode: String, val mess
     SEND_MAIL_FAIL(HttpStatus.BAD_REQUEST, "M1004", "메일 전송에 실패했습니다."),
     MEMBER_NOT_CONFIRM(HttpStatus.NOT_FOUND, "M1005", "이메일 인증이 되지 않은 회원입니다."),
 
-    INVALID_TOKEN_ERROR(HttpStatus.BAD_REQUEST, "T1000", "유효하지 않은 토큰입니다.");
+    INVALID_TOKEN_ERROR(HttpStatus.BAD_REQUEST, "T1000", "유효하지 않은 토큰입니다."),
+    EXPIRED_TOKEN_ERROR(HttpStatus.BAD_REQUEST, "T1001", "만료된 토큰입니다."),
+    TOKEN_NOT_MATCH(HttpStatus.BAD_REQUEST, "T1002", "토큰이 일치하지 않습니다.");
 
 
     companion object {

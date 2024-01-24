@@ -7,6 +7,7 @@ import com.cooffee.member.exception.CustomException
 import com.cooffee.member.model.SignInModel
 import com.cooffee.member.model.SignUpModel
 import com.cooffee.member.repository.MemberRepository
+import com.cooffee.member.repository.redis.ConfirmTokenRepository
 import com.cooffee.member.repository.redis.RefreshTokenRepository
 import com.cooffee.member.util.MailUtil
 import com.ninjasquad.springmockk.MockkBean
@@ -33,15 +34,16 @@ class MemberServiceTest(
     @MockkBean private val mailUtil: MailUtil,
     private val memberRepository: MemberRepository,
     private val refreshTokenRepository: RefreshTokenRepository,
+    private val confirmTokenRepository: ConfirmTokenRepository,
     private val jwtUtil: JwtUtil,
     private val jwtProperties: JwtProperties,
     private val passwordEncoder: PasswordEncoder,
 ) : BehaviorSpec({
 
-    val memberService: MemberService = MemberServiceImpl(memberRepository, refreshTokenRepository, mailUtil, jwtUtil, jwtProperties, passwordEncoder)
+    val memberService: MemberService = MemberServiceImpl(memberRepository, refreshTokenRepository, confirmTokenRepository, mailUtil, jwtUtil, jwtProperties, passwordEncoder)
 
     given("멤버가 가입할 때") {
-        every { mailUtil.sendMail(any()) } just Runs
+        every { mailUtil.sendMail(any(), any()) } just Runs
         val member = SignUpModel(
             name = "test",
             email = "test@test.com",
