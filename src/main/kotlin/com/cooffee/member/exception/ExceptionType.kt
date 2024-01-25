@@ -14,11 +14,14 @@ enum class ExceptionType(val status: HttpStatus, val errorCode: String, val mess
     INCORRECT_PASSWORD(HttpStatus.BAD_REQUEST, "M1003", "패스워드가 일치하지 않습니다."),
     SEND_MAIL_FAIL(HttpStatus.BAD_REQUEST, "M1004", "메일 전송에 실패했습니다."),
     MEMBER_NOT_CONFIRM(HttpStatus.NOT_FOUND, "M1005", "이메일 인증이 되지 않은 회원입니다."),
+    EMAIL_IS_BLANK(HttpStatus.BAD_REQUEST, "M1006", "이메일이 비어있습니다."),
 
     INVALID_TOKEN_ERROR(HttpStatus.BAD_REQUEST, "T1000", "유효하지 않은 토큰입니다."),
     EXPIRED_TOKEN_ERROR(HttpStatus.BAD_REQUEST, "T1001", "만료된 토큰입니다."),
-    TOKEN_NOT_MATCH(HttpStatus.BAD_REQUEST, "T1002", "토큰이 일치하지 않습니다.");
-
+    TOKEN_NOT_MATCH(HttpStatus.BAD_REQUEST, "T1002", "토큰이 일치하지 않습니다."),
+    CREATE_TOKEN_FAIL(HttpStatus.BAD_REQUEST, "T1003", "토큰이 생성되지 않았습니다."),
+    ACCESS_TOKEN_IS_BLANK(HttpStatus.BAD_REQUEST, "T1003", "엑세스 토큰이 비어있습니다."),
+    REFRESH_TOKEN_IS_BLANK(HttpStatus.BAD_REQUEST, "T1004", "리프레시 토큰이 비어있습니다.");
 
     companion object {
         fun exceptionType(errorCode: String): ExceptionType {

@@ -31,8 +31,10 @@ class MemberController(
     }
 
     @GetMapping("/details")
-    fun memberDetail(@RequestHeader("authorization") authorization: String,
-                     @RequestParam("email") email: String): BasicResponse<MemberResponse> {
+    fun memberDetail(
+        @RequestHeader("authorization") authorization: String,
+        @RequestParam("email") email: String
+    ): BasicResponse<MemberResponse> {
         log.info("Get Member Details : {}", email)
         val member: Member = memberService.getMemberByEmail(email)
         val memberResponse = MemberResponse(
