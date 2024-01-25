@@ -21,14 +21,14 @@ class MailUtil(
 
     private var number: Int = 0
 
-    fun sendMail(email: String) {
-        val message: MimeMessage = createMail(email)
+    fun sendMail(email: String, token: String) {
+        val message: MimeMessage = createMail(email, token)
         mailSender.send(message)
 
         log.info("Cooffee signup mail number : {}", number)
     }
 
-    fun createMail(email: String): MimeMessage {
+    fun createMail(email: String, token: String): MimeMessage {
         createNumber()
         val message: MimeMessage = mailSender.createMimeMessage()
 
@@ -38,7 +38,8 @@ class MailUtil(
             message.subject = "Cooffee 회원가입 인증"
             val body: String = """
             <h3>아래 링크를 통해 가입을 완료하세요</h3>
-            <h2><a href='http://localhost:$port/v1/member/hello' target='_blenk'>이메일 인증 확인</a></h2>
+            <h3>링크는 30분간 유효합니다</h3>
+            <h2><a href='http://localhost:$port/v1/member/confirm-mail?email=$email&token=$token' target='_blenk'>이메일 인증 확인</a></h2>
             <br/>
             <h3>감사합니다.</h3>
         """.trimIndent()

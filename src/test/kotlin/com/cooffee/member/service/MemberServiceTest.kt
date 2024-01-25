@@ -7,6 +7,7 @@ import com.cooffee.member.exception.CustomException
 import com.cooffee.member.model.SignInModel
 import com.cooffee.member.model.SignUpModel
 import com.cooffee.member.repository.MemberRepository
+import com.cooffee.member.repository.redis.ConfirmTokenRepository
 import com.cooffee.member.repository.redis.RefreshTokenRepository
 import com.cooffee.member.util.MailUtil
 import com.ninjasquad.springmockk.MockkBean
@@ -33,15 +34,16 @@ class MemberServiceTest(
     @MockkBean private val mailUtil: MailUtil,
     private val memberRepository: MemberRepository,
     private val refreshTokenRepository: RefreshTokenRepository,
+    private val confirmTokenRepository: ConfirmTokenRepository,
     private val jwtUtil: JwtUtil,
     private val jwtProperties: JwtProperties,
     private val passwordEncoder: PasswordEncoder,
 ) : BehaviorSpec({
 
-    val memberService: MemberService = MemberServiceImpl(memberRepository, refreshTokenRepository, mailUtil, jwtUtil, jwtProperties, passwordEncoder)
+    val memberService: MemberService = MemberServiceImpl(memberRepository, refreshTokenRepository, confirmTokenRepository, mailUtil, jwtUtil, jwtProperties, passwordEncoder)
 
     given("멤버가 가입할 때") {
-        every { mailUtil.sendMail(any()) } just Runs
+        every { mailUtil.sendMail(any(), any()) } just Runs
         val member = SignUpModel(
             name = "test",
             email = "test@test.com",
@@ -73,12 +75,16 @@ class MemberServiceTest(
 
     given("가입된 멤버가") {
         val normalSignInModel = SignInModel(
-            email = "dummy@test.com",
+            email = "dummy1@test.com",
             password = "123",
         )
         val abnormalSignInModel = SignInModel(
-            email = "dummy@test.com",
+            email = "dummy1@test.com",
             password = "1234",
+        )
+        val unConfirmSignInModel = SignInModel(
+            email = "dummy2@test.com",
+            password = "123",
         )
         `when`("로그인 할 때") {
             val token = memberService.signIn(normalSignInModel)
@@ -92,6 +98,14 @@ class MemberServiceTest(
             }
             then("예외를 반환한다") {
                 exception.message shouldContain "패스워드가 일치하지 않습니다."
+            }
+        }
+        `when`("이메일 인증이 되지 않으면") {
+            val exception = shouldThrow<CustomException> {
+                memberService.signIn(unConfirmSignInModel)
+            }
+            then("예외를 반환한다") {
+                exception.message shouldContain "이메일 인증이 되지 않은 회원입니다."
             }
         }
     }

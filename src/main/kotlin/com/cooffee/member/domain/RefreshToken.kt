@@ -1,5 +1,7 @@
 package com.cooffee.member.domain
 
+import com.cooffee.member.exception.CustomException
+import com.cooffee.member.exception.ExceptionType
 import org.springframework.data.annotation.Id
 import org.springframework.data.redis.core.RedisHash
 import org.springframework.data.redis.core.index.Indexed
@@ -14,4 +16,16 @@ data class RefreshToken(
 
     @Indexed
     var accessToken: String
-)
+) {
+    init {
+        require(id.isNotBlank()) {
+            throw CustomException(ExceptionType.MEMBER_ID_NOT_FOUND)
+        }
+        require(refreshToken.isNotBlank()) {
+            throw CustomException(ExceptionType.REFRESH_TOKEN_IS_BLANK)
+        }
+        require(accessToken.isNotBlank()) {
+            throw CustomException(ExceptionType.ACCESS_TOKEN_IS_BLANK)
+        }
+    }
+}

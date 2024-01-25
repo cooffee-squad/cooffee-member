@@ -31,8 +31,10 @@ class MemberController(
     }
 
     @GetMapping("/details")
-    fun memberDetail(@RequestHeader("authorization") authorization: String,
-                     @RequestParam("email") email: String): BasicResponse<MemberResponse> {
+    fun memberDetail(
+        @RequestHeader("authorization") authorization: String,
+        @RequestParam("email") email: String
+    ): BasicResponse<MemberResponse> {
         log.info("Get Member Details : {}", email)
         val member: Member = memberService.getMemberByEmail(email)
         val memberResponse = MemberResponse(
@@ -45,7 +47,7 @@ class MemberController(
     }
 
     @GetMapping("/confirm-mail")
-    fun confirmMail(@RequestParam email: String, @RequestParam token: String) {
-        memberService.confirmMember(email, token)
+    fun confirmMail(@RequestParam email: String, @RequestParam token: String): BasicResponse<String> {
+        return BasicResponse.toResponse(HttpStatus.OK, memberService.confirmMember(email, token))
     }
 }
