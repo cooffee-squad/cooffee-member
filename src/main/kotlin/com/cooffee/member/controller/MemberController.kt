@@ -48,6 +48,6 @@ class MemberController(
 
     @GetMapping("/confirm-mail")
     fun confirmMail(@RequestParam email: String, @RequestParam token: String): BasicResponse<String> {
-        return BasicResponse.toResponse(HttpStatus.OK, memberService.confirmMember(email, token))
+        return BasicResponse.toResponse(HttpStatus.OK, memberService.activateMember(email, token))
     }
 }

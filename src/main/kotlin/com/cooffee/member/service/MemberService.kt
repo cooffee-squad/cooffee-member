@@ -9,6 +9,5 @@ interface MemberService {
     fun signUp(signUpModel: SignUpModel): Member
     fun signIn(signInModel: SignInModel): SignInResponse
     fun getMemberByEmail(email: String): Member
-    fun findAllMember(): List<Member>
-    fun confirmMember(email: String, token: String): String
+    fun activateMember(email: String, token: String): String
 }
