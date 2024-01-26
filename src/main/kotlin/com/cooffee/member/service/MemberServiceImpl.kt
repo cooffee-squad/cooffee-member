@@ -21,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.apache.logging.log4j.LogManager
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -59,17 +60,7 @@ class MemberServiceImpl(
             confirm = false
         )
 
-        val randomToken = UUID.randomUUID().toString()
-
-        val confirmToken = ConfirmToken(
-            email = member.email,
-            token = randomToken
-        )
-        confirmTokenRepository.save(confirmToken)
-
-        CoroutineScope(Dispatchers.IO).launch {
-            mailUtil.sendMail(signUpModel.email, randomToken)
-        }
+        confirmMember(signUpModel.email)
 
         return memberRepository.save(member)
     }
@@ -79,6 +70,8 @@ class MemberServiceImpl(
 
         val member = memberRepository.findByEmail(email) ?: throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
         if (member.confirm.not()) {
+
+            confirmMember(email)
             throw CustomException(ExceptionType.MEMBER_NOT_CONFIRM)
         }
 
@@ -106,20 +99,34 @@ class MemberServiceImpl(
     override fun getMemberByEmail(email: String): Member =
         memberRepository.findByEmail(email) ?: throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
 
-
-    override fun findAllMember(): List<Member> = memberRepository.findAll()
-
     @Transactional
-    override fun confirmMember(email: String, token: String): String {
+    override fun activateMember(email: String, token: String): String {
         val member: Member = getMemberByEmail(email)
-        val findConfirmToken = confirmTokenRepository.findById(email)
-        if (token == findConfirmToken.get().token) {
-            member.activateMember()
-            log.info("token match email : $email")
-            return email
-        } else {
+        val findConfirmToken = confirmTokenRepository.findByIdOrNull(email)
+            ?: throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
+
+        require(token == findConfirmToken.token) {
             log.error("token not match email : $email")
             throw CustomException(ExceptionType.TOKEN_NOT_MATCH)
+        }
+
+        member.activateMember()
+        log.info("token match email : $email")
+        return email
+    }
+
+    private fun confirmMember(email: String) {
+
+        val randomToken = UUID.randomUUID().toString()
+        val confirmToken = ConfirmToken(
+            email = email,
+            token = randomToken
+        )
+
+        confirmTokenRepository.save(confirmToken)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            mailUtil.sendMail(email, randomToken)
         }
     }
 }
