@@ -8,6 +8,7 @@ plugins {
     kotlin("jvm") version "1.9.20"
     kotlin("plugin.spring") version "1.9.20"
     kotlin("plugin.jpa") version "1.9.20"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
 }
 
 apply(plugin = "com.google.protobuf")
