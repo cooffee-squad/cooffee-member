@@ -3,7 +3,6 @@ package com.cooffee.member.exception
 import org.springframework.http.HttpStatus
 
 enum class ExceptionType(val status: HttpStatus, val errorCode: String, val message: String) {
-
     ERROR_CODE_NOT_FOUND(HttpStatus.NOT_FOUND, "ER1000", "에러 코드가 없습니다."),
 
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "AU1000", "권한이 없습니다."),
@@ -21,7 +20,7 @@ enum class ExceptionType(val status: HttpStatus, val errorCode: String, val mess
     TOKEN_NOT_MATCH(HttpStatus.BAD_REQUEST, "T1002", "토큰이 일치하지 않습니다."),
     CREATE_TOKEN_FAIL(HttpStatus.BAD_REQUEST, "T1003", "토큰이 생성되지 않았습니다."),
     ACCESS_TOKEN_IS_BLANK(HttpStatus.BAD_REQUEST, "T1003", "엑세스 토큰이 비어있습니다."),
-    REFRESH_TOKEN_IS_BLANK(HttpStatus.BAD_REQUEST, "T1004", "리프레시 토큰이 비어있습니다.");
+    REFRESH_TOKEN_IS_BLANK(HttpStatus.BAD_REQUEST, "T1004", "리프레시 토큰이 비어있습니다."), ;
 
     companion object {
         fun exceptionType(errorCode: String): ExceptionType {

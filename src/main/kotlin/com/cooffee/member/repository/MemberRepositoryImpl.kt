@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class MemberRepositoryImpl(
-    private val memberJpaRepository: MemberJpaRepository
+    private val memberJpaRepository: MemberJpaRepository,
 ) : MemberRepository {
     override fun save(member: Member): Member = memberJpaRepository.save(member)
 
