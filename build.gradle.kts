@@ -8,6 +8,7 @@ plugins {
     kotlin("jvm") version "1.9.20"
     kotlin("plugin.spring") version "1.9.20"
     kotlin("plugin.jpa") version "1.9.20"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
 }
 
 apply(plugin = "com.google.protobuf")
@@ -26,6 +27,14 @@ repositories {
 val grpcVersion = "1.59.0"
 val protobufVersion = "3.21.7"
 val protocVersion = protobufVersion
+
+tasks.register("installGitHooks") {
+    dependsOn("addKtlintCheckGitPreCommitHook")
+}
+
+tasks.named("compileKotlin").configure {
+    finalizedBy("installGitHooks")
+}
 
 sourceSets {
     main {
