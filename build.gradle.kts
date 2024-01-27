@@ -28,14 +28,6 @@ val grpcVersion = "1.59.0"
 val protobufVersion = "3.21.7"
 val protocVersion = protobufVersion
 
-tasks.register("installGitHooks") {
-    dependsOn("addKtlintCheckGitPreCommitHook")
-}
-
-tasks.named("compileKotlin").configure {
-    finalizedBy("installGitHooks")
-}
-
 sourceSets {
     main {
         java {
