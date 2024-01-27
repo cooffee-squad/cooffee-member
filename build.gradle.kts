@@ -1,5 +1,5 @@
+import com.google.protobuf.gradle.id
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import com.google.protobuf.gradle.*
 
 plugins {
     id("org.springframework.boot") version "3.2.0"
@@ -43,55 +43,55 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
-    //kotlin
+    // kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-    //mockk
+    // mockk
     implementation("com.ninja-squad:springmockk:4.0.2")
 
-    //postgresql
+    // postgresql
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("com.h2database:h2")
 
-    //liquibase
+    // liquibase
     implementation("org.liquibase:liquibase-core")
 
-    //jwt
+    // jwt
     implementation("com.auth0:java-jwt:4.4.0")
     implementation("com.auth0:jwks-rsa:0.22.1")
 
-    //gRPC
-    implementation("io.grpc:grpc-protobuf:${grpcVersion}")
-    implementation("io.grpc:grpc-stub:${grpcVersion}")
+    // gRPC
+    implementation("io.grpc:grpc-protobuf:$grpcVersion")
+    implementation("io.grpc:grpc-stub:$grpcVersion")
 
     implementation("javax.annotation:javax.annotation-api:1.3.2")
 
-    //coroutines
+    // coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
-    //test
+    // test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.springframework.security:spring-security-test")
 
-    //kotest
+    // kotest
     testImplementation("com.ninja-squad:springmockk:4.0.2")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:5.6.2")
     testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-    //testcontainer
+    // testcontainer
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
 }
 
 protobuf {
-    protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
+    protoc { artifact = "com.google.protobuf:protoc:$protocVersion" }
     plugins {
         id("grpc") {
-            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+            artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
         }
     }
 

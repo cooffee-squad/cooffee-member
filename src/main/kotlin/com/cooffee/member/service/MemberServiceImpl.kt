@@ -25,7 +25,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
+import java.util.UUID
 
 private val log = LogManager.getLogger()
 
@@ -40,7 +40,6 @@ class MemberServiceImpl(
     private val jwtProperties: JwtProperties,
     private val encoder: PasswordEncoder,
 ) : MemberService {
-
     @Transactional
     override fun signUp(signUpModel: SignUpModel): Member {
         with(signUpModel) {
@@ -50,15 +49,16 @@ class MemberServiceImpl(
             }
         }
 
-        val member = Member(
-            name = signUpModel.name,
-            email = signUpModel.email,
-            password = encoder.encode(signUpModel.password),
-            phone = signUpModel.phone,
-            address = Address(signUpModel.mainAddress, signUpModel.subAddress, signUpModel.zipcode),
-            type = MemberType.NORMAL,
-            confirm = false
-        )
+        val member =
+            Member(
+                name = signUpModel.name,
+                email = signUpModel.email,
+                password = encoder.encode(signUpModel.password),
+                phone = signUpModel.phone,
+                address = Address(signUpModel.mainAddress, signUpModel.subAddress, signUpModel.zipcode),
+                type = MemberType.NORMAL,
+                confirm = false,
+            )
 
         confirmMember(signUpModel.email)
 
@@ -66,44 +66,47 @@ class MemberServiceImpl(
     }
 
     @Transactional
-    override fun signIn(signInModel: SignInModel): SignInResponse = with(signInModel) {
+    override fun signIn(signInModel: SignInModel): SignInResponse =
+        with(signInModel) {
+            val member = memberRepository.findByEmail(email) ?: throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
+            if (member.confirm.not()) {
+                confirmMember(email)
+                throw CustomException(ExceptionType.MEMBER_NOT_CONFIRM)
+            }
 
-        val member = memberRepository.findByEmail(email) ?: throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
-        if (member.confirm.not()) {
+            encoder.matches(signInModel.password, member.password).takeIf { it }
+                ?.let {
+                    val claim =
+                        JwtClaim(
+                            id = member.id ?: throw CustomException(ExceptionType.MEMBER_ID_NOT_FOUND),
+                            email = member.email,
+                            name = member.name,
+                        )
+                    val accessToken = jwtUtil.createAccessToken(claim, jwtProperties)
+                    val refreshToken = jwtUtil.createRefreshToken(claim, jwtProperties)
 
-            confirmMember(email)
-            throw CustomException(ExceptionType.MEMBER_NOT_CONFIRM)
+                    // Redis 에 토큰 저장
+                    val saveRefreshToken =
+                        refreshTokenRepository.save(RefreshToken(member.id.toString(), refreshToken, accessToken))
+
+                    log.info("Member {} save refresh token : {}", saveRefreshToken)
+
+                    SignInResponse(accessToken = accessToken, refreshToken = refreshToken)
+                } ?: throw CustomException(ExceptionType.INCORRECT_PASSWORD)
         }
-
-        encoder.matches(signInModel.password, member.password).takeIf { it }
-            ?.let {
-                val claim = JwtClaim(
-                    id = member.id ?: throw CustomException(ExceptionType.MEMBER_ID_NOT_FOUND),
-                    email = member.email,
-                    name = member.name,
-                )
-                val accessToken = jwtUtil.createAccessToken(claim, jwtProperties)
-                val refreshToken = jwtUtil.createRefreshToken(claim, jwtProperties)
-
-                // Redis 에 토큰 저장
-                val saveRefreshToken =
-                    refreshTokenRepository.save(RefreshToken(member.id.toString(), refreshToken, accessToken))
-
-                log.info("Member {} save refresh token : {}", saveRefreshToken)
-
-                SignInResponse(accessToken = accessToken, refreshToken = refreshToken)
-
-            } ?: throw CustomException(ExceptionType.INCORRECT_PASSWORD)
-    }
 
     override fun getMemberByEmail(email: String): Member =
         memberRepository.findByEmail(email) ?: throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
 
     @Transactional
-    override fun activateMember(email: String, token: String): String {
+    override fun activateMember(
+        email: String,
+        token: String,
+    ): String {
         val member: Member = getMemberByEmail(email)
-        val findConfirmToken = confirmTokenRepository.findByIdOrNull(email)
-            ?: throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
+        val findConfirmToken =
+            confirmTokenRepository.findByIdOrNull(email)
+                ?: throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
 
         require(token == findConfirmToken.token) {
             log.error("token not match email : $email")
@@ -116,12 +119,12 @@ class MemberServiceImpl(
     }
 
     private fun confirmMember(email: String) {
-
         val randomToken = UUID.randomUUID().toString()
-        val confirmToken = ConfirmToken(
-            email = email,
-            token = randomToken
-        )
+        val confirmToken =
+            ConfirmToken(
+                email = email,
+                token = randomToken,
+            )
 
         confirmTokenRepository.save(confirmToken)
 

@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface RefreshTokenRepository : CrudRepository<RefreshToken, String> {
     fun findByAccessToken(accessToken: String): RefreshToken?
+
     fun deleteByAccessToken(accessToken: String)
 }

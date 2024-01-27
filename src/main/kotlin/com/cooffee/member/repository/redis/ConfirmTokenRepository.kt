@@ -5,6 +5,4 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ConfirmTokenRepository : CrudRepository<ConfirmToken, String> {
-
-}
+interface ConfirmTokenRepository : CrudRepository<ConfirmToken, String>
