@@ -1,0 +1,23 @@
+= Member API
+// Metadata:
+:description: cooffee member API documentation
+:keywords: member
+// Settings:
+:doctype: book
+:toc: left
+:toclevels: 4
+:sectlinks:
+:icons: font
+:idprefix:
+:idseparator: -
+// Refs
+:api-base: member
+
+[[api-list]]
+== API 목록
+
+[[user-details]]
+=== 사용자 상세 정보
+include::{snippets}/member-details/curl-request.adoc[]
+include::{snippets}/member-details/http-request.adoc[]
+include::{snippets}/member-details/http-response.adoc[]
