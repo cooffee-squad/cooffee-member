@@ -1,0 +1,40 @@
+= Member API
+// Metadata:
+:description: cooffee member API documentation
+:keywords: member
+// Settings:
+:doctype: book
+:toc: left
+:toclevels: 4
+:sectlinks:
+:icons: font
+:idprefix:
+:idseparator: -
+// Refs
+:api-base: member
+
+[[api-list]]
+== API 목록
+
+[[user-details]]
+=== 사용자 상세 정보
+include::{snippets}/member-details/curl-request.adoc[]
+include::{snippets}/member-details/query-parameters.adoc[]
+include::{snippets}/member-details/http-request.adoc[]
+include::{snippets}/member-details/http-response.adoc[]
+
+[[user-signup]]
+=== 사용자 가입
+include::{snippets}/member-sign-up/curl-request.adoc[]
+include::{snippets}/member-sign-up/request-headers.adoc[]
+include::{snippets}/member-sign-up/request-body.adoc[]
+include::{snippets}/member-sign-up/http-request.adoc[]
+include::{snippets}/member-sign-up/http-response.adoc[]
+
+[[user-signin]]
+=== 사용자 로그인
+include::{snippets}/member-sign-in/curl-request.adoc[]
+include::{snippets}/member-sign-in/request-headers.adoc[]
+include::{snippets}/member-sign-in/request-body.adoc[]
+include::{snippets}/member-sign-in/http-request.adoc[]
+include::{snippets}/member-sign-in/http-response.adoc[]

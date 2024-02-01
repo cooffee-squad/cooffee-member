@@ -9,6 +9,7 @@ plugins {
     kotlin("plugin.spring") version "1.9.20"
     kotlin("plugin.jpa") version "1.9.20"
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+    id("org.asciidoctor.jvm.convert") version "3.3.2"
 }
 
 apply(plugin = "com.google.protobuf")
@@ -27,6 +28,8 @@ repositories {
 val grpcVersion = "1.59.0"
 val protobufVersion = "3.21.7"
 val protocVersion = protobufVersion
+val snippetsDir by extra { file("build/generated-snippets") }
+val asciidoctorExt: Configuration by configurations.creating
 
 sourceSets {
     main {
@@ -82,6 +85,10 @@ dependencies {
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
+    // restdocs
+    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    asciidoctorExt("org.springframework.restdocs:spring-restdocs-asciidoctor")
+
     // testcontainer
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
@@ -108,14 +115,45 @@ protobuf {
         setGeneratedFilesBaseDir("$projectDir/src/generatedProto")
     }
 
-    tasks.withType<KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs += "-Xjsr305=strict"
-            jvmTarget = "17"
+    tasks {
+        withType<KotlinCompile> {
+            kotlinOptions {
+                freeCompilerArgs += "-Xjsr305=strict"
+                jvmTarget = "17"
+            }
         }
-    }
 
-    tasks.withType<Test> {
-        useJUnitPlatform()
+        test {
+            useJUnitPlatform()
+            outputs.dir(snippetsDir)
+        }
+
+        asciidoctor {
+            inputs.dir(snippetsDir)
+            configurations("asciidoctorExt")
+            dependsOn(test)
+
+            doFirst {
+                delete {
+                    file("src/main/resources/static/docs")
+                }
+            }
+        }
+
+        register("copyHTML", Copy::class) {
+            dependsOn(asciidoctor)
+            from("build/docs/asciidoc")
+            into(file("src/main/resources/static/docs"))
+        }
+
+        build {
+            dependsOn(asciidoctor)
+            dependsOn(getByName("copyHTML"))
+        }
+
+        bootJar {
+            dependsOn(asciidoctor)
+            dependsOn(getByName("copyHTML"))
+        }
     }
 }
