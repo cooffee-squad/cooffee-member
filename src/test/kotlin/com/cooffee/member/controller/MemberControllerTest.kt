@@ -201,6 +201,7 @@ class MemberControllerTest {
             @AfterAll
             fun afterAll() {
                 container.stop()
+                redisContainer.stop()
             }
         }
     }
