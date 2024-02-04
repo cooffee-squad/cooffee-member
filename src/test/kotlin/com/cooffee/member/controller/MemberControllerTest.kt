@@ -2,6 +2,7 @@ package com.cooffee.member.controller
 
 import com.cooffee.member.common.NUMBER
 import com.cooffee.member.common.STRING
+import com.cooffee.member.common.andDocument
 import com.cooffee.member.common.headerMeans
 import com.cooffee.member.common.paramMeans
 import com.cooffee.member.common.queryParameters
@@ -23,7 +24,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.restdocs.RestDocumentationExtension
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import org.springframework.test.context.DynamicPropertyRegistry
@@ -61,25 +61,23 @@ class MemberControllerTest {
         )
             .andExpect { status().isOk }
             .andDo { print() }
-            .andDo(
-                document(
-                    "member-details",
-                    requestHeaders(
-                        "Authorization" headerMeans "인증 토큰",
-                    ),
-                    queryParameters(
-                        "email" paramMeans "회원 이메일",
-                    ),
-                    responseBody(
-                        "statusCode" type NUMBER means "상태 코드",
-                        "status" type STRING means "상태",
-                        "data.email" type STRING means "회원 이메일",
-                        "data.name" type STRING means "회원 이름",
-                        "data.phone" type STRING means "회원 전화번호",
-                        "data.address.mainAddress" type STRING means "회원 주소(도로명)",
-                        "data.address.subAddress" type STRING means "회원 주소(상세)",
-                        "data.address.zipcode" type NUMBER means "회원 주소(우편번호)",
-                    ),
+            .andDocument(
+                "member-details",
+                requestHeaders(
+                    "Authorization" headerMeans "인증 토큰",
+                ),
+                queryParameters(
+                    "email" paramMeans "회원 이메일",
+                ),
+                responseBody(
+                    "statusCode" type NUMBER means "상태 코드",
+                    "status" type STRING means "상태",
+                    "data.email" type STRING means "회원 이메일",
+                    "data.name" type STRING means "회원 이름",
+                    "data.phone" type STRING means "회원 전화번호",
+                    "data.address.mainAddress" type STRING means "회원 주소(도로명)",
+                    "data.address.subAddress" type STRING means "회원 주소(상세)",
+                    "data.address.zipcode" type NUMBER means "회원 주소(우편번호)",
                 ),
             )
     }
@@ -108,27 +106,25 @@ class MemberControllerTest {
         )
             .andExpect { status().isOk }
             .andDo { print() }
-            .andDo(
-                document(
-                    "member-sign-up",
-                    requestHeaders(
-                        "Authorization" headerMeans "인증 토큰",
-                    ),
-                    requestBody(
-                        "email" type STRING means "회원 이메일",
-                        "password" type STRING means "회원 비밀번호",
-                        "name" type STRING means "회원 이름",
-                        "phone" type STRING means "회원 전화번호",
-                        "mainAddress" type STRING means "회원 주소(도로명)",
-                        "subAddress" type STRING means "회원 주소(상세)",
-                        "zipcode" type NUMBER means "회원 주소(우편번호)",
-                    ),
-                    responseBody(
-                        "statusCode" type NUMBER means "상태 코드",
-                        "status" type STRING means "상태",
-                        "data.email" type STRING means "회원 이메일",
-                        "data.name" type STRING means "회원 이름",
-                    ),
+            .andDocument(
+                "member-sign-up",
+                requestHeaders(
+                    "Authorization" headerMeans "인증 토큰",
+                ),
+                requestBody(
+                    "email" type STRING means "회원 이메일",
+                    "password" type STRING means "회원 비밀번호",
+                    "name" type STRING means "회원 이름",
+                    "phone" type STRING means "회원 전화번호",
+                    "mainAddress" type STRING means "회원 주소(도로명)",
+                    "subAddress" type STRING means "회원 주소(상세)",
+                    "zipcode" type NUMBER means "회원 주소(우편번호)",
+                ),
+                responseBody(
+                    "statusCode" type NUMBER means "상태 코드",
+                    "status" type STRING means "상태",
+                    "data.email" type STRING means "회원 이메일",
+                    "data.name" type STRING means "회원 이름",
                 ),
             )
     }
@@ -154,22 +150,20 @@ class MemberControllerTest {
         )
             .andExpect { status().isOk }
             .andDo { print() }
-            .andDo(
-                document(
-                    "member-sign-in",
-                    requestHeaders(
-                        "Authorization" headerMeans "인증 토큰",
-                    ),
-                    requestBody(
-                        "email" type STRING means "회원 이메일",
-                        "password" type STRING means "회원 비밀번호",
-                    ),
-                    responseBody(
-                        "statusCode" type NUMBER means "상태 코드",
-                        "status" type STRING means "상태",
-                        "data.accessToken" type STRING means "회원 토큰",
-                        "data.refreshToken" type STRING means "회원 리프레시 토큰",
-                    ),
+            .andDocument(
+                "member-sign-in",
+                requestHeaders(
+                    "Authorization" headerMeans "인증 토큰",
+                ),
+                requestBody(
+                    "email" type STRING means "회원 이메일",
+                    "password" type STRING means "회원 비밀번호",
+                ),
+                responseBody(
+                    "statusCode" type NUMBER means "상태 코드",
+                    "status" type STRING means "상태",
+                    "data.accessToken" type STRING means "회원 토큰",
+                    "data.refreshToken" type STRING means "회원 리프레시 토큰",
                 ),
             )
     }
