@@ -1,5 +1,6 @@
 package com.cooffee.member.config
 
+import com.cooffee.member.service.OAuthService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.Customizer
@@ -11,7 +12,10 @@ import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
 @EnableWebSecurity
-class WebConfig {
+class WebConfig
+    (
+    private val oAuthService: OAuthService
+) {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { it.disable() }
@@ -22,8 +26,12 @@ class WebConfig {
             .formLogin { formLogin ->
                 formLogin.disable()
             }
-            .rememberMe(Customizer.withDefaults())
-
+            .oauth2Login { it ->
+                it.loginProcessingUrl("/v1/member/oauth2/authorization")
+                it.userInfoEndpoint {
+                    it.userService(oAuthService)
+                }
+            }
         return http.build()
     }
 
