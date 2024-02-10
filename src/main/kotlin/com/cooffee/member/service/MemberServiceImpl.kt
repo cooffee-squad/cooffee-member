@@ -56,7 +56,7 @@ class MemberServiceImpl(
                 password = encoder.encode(signUpModel.password),
                 phone = signUpModel.phone,
                 address = Address(signUpModel.mainAddress, signUpModel.subAddress, signUpModel.zipcode),
-                type = MemberType.NORMAL,
+                type = MemberType.ROLE_NORMAL,
                 confirm = false,
             )
 
@@ -78,7 +78,6 @@ class MemberServiceImpl(
                 ?.let {
                     val claim =
                         JwtClaim(
-                            id = member.id ?: throw CustomException(ExceptionType.MEMBER_ID_NOT_FOUND),
                             email = member.email,
                             name = member.name,
                         )
@@ -89,7 +88,7 @@ class MemberServiceImpl(
                     val saveRefreshToken =
                         refreshTokenRepository.save(RefreshToken(member.id.toString(), refreshToken, accessToken))
 
-                    log.info("Member {} save refresh token : {}", saveRefreshToken)
+                    log.info("Member {} save refresh token : {}", member.email, saveRefreshToken)
 
                     SignInResponse(accessToken = accessToken, refreshToken = refreshToken)
                 } ?: throw CustomException(ExceptionType.INCORRECT_PASSWORD)
@@ -103,7 +102,6 @@ class MemberServiceImpl(
         email: String,
         token: String,
     ): String {
-        val member: Member = getMemberByEmail(email)
         val findConfirmToken =
             confirmTokenRepository.findByIdOrNull(email)
                 ?: throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
@@ -112,7 +110,7 @@ class MemberServiceImpl(
             log.error("token not match email : $email")
             throw CustomException(ExceptionType.TOKEN_NOT_MATCH)
         }
-
+        val member: Member = getMemberByEmail(email)
         member.activateMember()
         log.info("token match email : $email")
         return email

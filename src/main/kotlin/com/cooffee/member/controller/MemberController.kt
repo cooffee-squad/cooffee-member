@@ -8,11 +8,9 @@ import com.cooffee.member.model.SignUpModel
 import com.cooffee.member.model.SignUpResponse
 import com.cooffee.member.model.common.BasicResponse
 import com.cooffee.member.service.MemberService
-import jakarta.servlet.http.HttpServletResponse
 import org.apache.logging.log4j.LogManager
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
@@ -68,10 +66,5 @@ class MemberController(
         @RequestParam token: String,
     ): BasicResponse<String> {
         return BasicResponse.toResponse(HttpStatus.OK, memberService.activateMember(email, token))
-    }
-
-    @GetMapping("/oauth2")
-    fun oAuthLogin(
-    ) {
     }
 }

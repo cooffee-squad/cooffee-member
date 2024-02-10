@@ -19,15 +19,15 @@ class JwtUtil {
         jwtClaim: JwtClaim,
         properties: JwtProperties,
     ): String =
-        JWT.create()
-            .withIssuer(properties.issuer)
-            .withSubject(properties.subject)
-            .withIssuedAt(Date())
-            .withExpiresAt(Date(Date().time + properties.expiresTime * 1000))
-            .withClaim("memberId", jwtClaim.id)
-            .withClaim("email", jwtClaim.email)
-            .withClaim("name", jwtClaim.name)
-            .sign(Algorithm.HMAC256(properties.secret))
+        "Bearer " +
+            JWT.create()
+                .withIssuer(properties.issuer)
+                .withSubject(properties.subject)
+                .withIssuedAt(Date())
+                .withExpiresAt(Date(Date().time + properties.expiresTime * 1000))
+                .withClaim("email", jwtClaim.email)
+                .withClaim("name", jwtClaim.name)
+                .sign(Algorithm.HMAC256(properties.secret))
 
     fun createRefreshToken(
         jwtClaim: JwtClaim,
@@ -54,10 +54,21 @@ class JwtUtil {
             throw CustomException(ExceptionType.UNAUTHORIZED)
         }
     }
+
+    fun verify(token: String): Boolean {
+        return true
+    }
+
+    fun getMemberFromToken(token: String): JwtClaim {
+        val decodedJWT = JWT.decode(token)
+        return JwtClaim(
+            email = decodedJWT.getClaim("email").asString(),
+            name = decodedJWT.getClaim("name").asString(),
+        )
+    }
 }
 
 data class JwtClaim(
-    val id: Long,
     val email: String,
     val name: String,
 )
