@@ -1,8 +1,7 @@
-package com.cooffee.member.service
+package com.cooffee.member.service.oauth
 
-import com.cooffee.member.exception.CustomException
-import com.cooffee.member.exception.ExceptionType
 import com.cooffee.member.repository.MemberRepository
+import org.springframework.security.authentication.AuthenticationServiceException
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
@@ -21,7 +20,7 @@ class CustomOAuth2Service(
             userRequest?.clientRegistration?.providerDetails?.userInfoEndpoint?.userNameAttributeName
 
         val email = authUser.attributes["email"] as String
-        val member = memberRepository.findByEmail(email) ?: throw CustomException(ExceptionType.MEMBER_NOT_FOUND)
+        val member = memberRepository.findByEmail(email) ?: throw AuthenticationServiceException("Member not found")
 
         return DefaultOAuth2User(
             listOf(SimpleGrantedAuthority(member.type.name)),

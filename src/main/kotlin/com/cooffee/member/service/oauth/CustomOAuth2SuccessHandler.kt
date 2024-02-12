@@ -1,10 +1,9 @@
-package com.cooffee.member.common
+package com.cooffee.member.service.oauth
 
 import com.cooffee.member.common.jwt.JwtClaim
 import com.cooffee.member.common.jwt.JwtProperties
 import com.cooffee.member.common.jwt.JwtUtil
 import com.cooffee.member.model.common.BasicResponse
-import com.cooffee.member.repository.MemberRepository
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Component
 class CustomOAuth2SuccessHandler(
     private val jwtProperties: JwtProperties,
     private val jwtUtil: JwtUtil,
-    private val memberRepository: MemberRepository,
 ) : SimpleUrlAuthenticationSuccessHandler() {
     override fun onAuthenticationSuccess(
         request: HttpServletRequest?,

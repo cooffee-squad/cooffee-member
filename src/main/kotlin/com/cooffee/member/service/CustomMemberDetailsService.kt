@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 
 @Service
-class CustomUserDetailsService(
+class CustomMemberDetailsService(
     private val memberRepository: MemberRepository,
 ) : UserDetailsService {
     override fun loadUserByUsername(username: String?): UserDetails {
