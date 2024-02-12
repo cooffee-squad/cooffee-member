@@ -40,10 +40,21 @@ sourceSets {
 }
 
 dependencies {
+    // jpa
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    // security
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.security:spring-security-oauth2-client")
+    implementation("org.springframework.security:spring-security-oauth2-jose")
+
+    // web
     implementation("org.springframework.boot:spring-boot-starter-web")
+
+    // mail
     implementation("org.springframework.boot:spring-boot-starter-mail")
+
+    // redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
     // kotlin

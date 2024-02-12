@@ -14,7 +14,7 @@ class JwtTest(
 ) : BehaviorSpec(
         {
             given("토큰이 주어졌을 때") {
-                val claim = JwtClaim(1L, "test@test.com", "테스트")
+                val claim = JwtClaim("test@test.com", "테스트")
                 val token = jwtUtil.createAccessToken(claim, jwtProperties)
 
                 `when`("토큰을 검증한 후") {
@@ -22,7 +22,6 @@ class JwtTest(
 
                     then("claim을 가져온다") {
                         with(decode) {
-                            claims["memberId"]?.asLong() shouldBe 1L
                             claims["email"]?.asString() shouldBe "test@test.com"
                             claims["name"]?.asString() shouldBe "테스트"
                         }
