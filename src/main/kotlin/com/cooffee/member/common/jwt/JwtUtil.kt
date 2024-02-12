@@ -48,7 +48,7 @@ class JwtUtil {
         val verifier: JWTVerifier = JWT.require(algorithm).build()
 
         return try {
-            verifier.verify(token)
+            verifier.verify(token.substring(7))
         } catch (e: JWTVerificationException) {
             log.error("유효하지 않은 토큰입니다 : {}", e.message)
             throw CustomException(ExceptionType.UNAUTHORIZED)
