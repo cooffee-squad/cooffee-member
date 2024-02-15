@@ -166,5 +166,8 @@ protobuf {
             dependsOn(asciidoctor)
             dependsOn(getByName("copyHTML"))
         }
+        jar {
+            enabled = false
+        }
     }
 }
