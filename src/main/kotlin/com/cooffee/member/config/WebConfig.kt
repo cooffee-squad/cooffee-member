@@ -29,12 +29,12 @@ class WebConfig(
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
             .authorizeHttpRequests {
-                it.requestMatchers("/v1/member/signUp", "/v1/member/signIn").permitAll()
+                it.requestMatchers("/signUp", "/signIn").permitAll()
                     .anyRequest().authenticated()
             }
             .oauth2Login {
                 it.authorizationEndpoint { endPoint ->
-                    endPoint.baseUri("/v1/member/oauth2/login")
+                    endPoint.baseUri("/oauth2/login")
                 }
                 it.userInfoEndpoint { endPoint ->
                     endPoint.userService(customOAuth2Service)

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 private val log = LogManager.getLogger()
 
 @RestController
-@RequestMapping("/v1/member")
+@RequestMapping("/")
 class MemberController(
     private val memberService: MemberService,
 ) {
