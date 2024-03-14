@@ -61,9 +61,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-    // mockk
-    implementation("com.ninja-squad:springmockk:4.0.2")
-
     // postgresql
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("com.h2database:h2")
